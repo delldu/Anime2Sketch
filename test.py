@@ -12,7 +12,8 @@ from data import read_img_path, tensor_to_img, save_image
 import argparse
 from tqdm.auto import tqdm
 from kornia.enhance import equalize_clahe
-
+import todos
+import pdb
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Anime-to-sketch test options.')
@@ -30,6 +31,9 @@ if __name__ == '__main__':
     device = torch.device('cuda' if len(opt.gpu_ids)>0 else 'cpu')
     model = create_model(opt.model).to(device)      # create a model given opt.model and other options
     model.eval()
+    # torch.jit.script(model)
+    print(model)
+
     # get input data
     if os.path.isdir(opt.dataroot):
         test_list = get_image_list(opt.dataroot)
@@ -51,6 +55,12 @@ if __name__ == '__main__':
             img = equalize_clahe(img, clip_limit=opt.clahe_clip)
             img = (img - .5) / .5 # [0,1] to [-1,1]
 
+        # todos.debug.output_var("img", img)
+        # tensor [img] size: [1, 3, 512, 512] , min: -1.0 , max: 1.0
+
         aus_tensor = model(img.to(device))
+        # todos.debug.output_var("aus_tensor", aus_tensor)
+        # tensor [aus_tensor] size: [1, 1, 512, 512] , min: -0.876417338848114 , max: 1.0
+
         aus_img = tensor_to_img(aus_tensor)
         save_image(aus_img, aus_path, aus_resize)

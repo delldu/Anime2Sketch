@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn 
 import torch.nn.functional as F
 import functools
+import todos
+import pdb
 
 class UnetGenerator(nn.Module):
     """Create a Unet-based generator"""
@@ -19,6 +21,15 @@ class UnetGenerator(nn.Module):
         It is a recursive process.
         """
         super(UnetGenerator, self).__init__()
+        # input_nc = 3
+        # output_nc = 1
+        # num_downs = 8
+        # ngf = 64
+        # norm_layer = functools.partial(<class 'torch.nn.modules.instancenorm.InstanceNorm2d'>, 
+        # affine=False, track_running_stats=False)
+        # use_dropout = False
+
+
         # construct unet structure
         unet_block = UnetSkipConnectionBlock(ngf * 8, ngf * 8, input_nc=None, submodule=None, norm_layer=norm_layer, innermost=True)  # add the innermost layer
         for _ in range(num_downs - 5):          # add intermediate layers with ngf * 8 filters
@@ -28,6 +39,8 @@ class UnetGenerator(nn.Module):
         unet_block = UnetSkipConnectionBlock(ngf * 2, ngf * 4, input_nc=None, submodule=unet_block, norm_layer=norm_layer)
         unet_block = UnetSkipConnectionBlock(ngf, ngf * 2, input_nc=None, submodule=unet_block, norm_layer=norm_layer)
         self.model = UnetSkipConnectionBlock(output_nc, ngf, input_nc=input_nc, submodule=unet_block, outermost=True, norm_layer=norm_layer)  # add the outermost layer
+
+        # pdb.set_trace()
 
     def forward(self, input):
         """Standard forward"""

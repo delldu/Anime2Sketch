@@ -9,6 +9,7 @@ except ImportError:
 
 import numpy as np
 import torch 
+import pdb
 
 IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
 
@@ -60,6 +61,12 @@ def read_img_path(path, load_size):
     if load_size > 0:
         aus_resize = img.size
     transform = get_transform(load_size=load_size)
+    # Compose(
+    #     Resize(size=[512, 512], interpolation=bicubic, max_size=None, antialias=warn)
+    #     ToTensor()
+    #     Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+    # )
+
     image = transform(img)
     return image.unsqueeze(0), aus_resize 
 
